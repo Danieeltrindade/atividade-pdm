@@ -10,19 +10,30 @@ const defaultCategories = [
 
 async function main() {
   for (const category of defaultCategories) {
-    await prisma.category.upsert({
+    const existingCategory = await prisma.category.findFirst({
       where: {
-        name_userId: {
-          name: category.name,
-          userId: null,
+        name: category.name,
+        userId: null,
+      },
+    });
+
+    if (existingCategory) {
+      await prisma.category.update({
+        where: {
+          id: existingCategory.id,
         },
-      },
-      update: {
-        color: category.color,
-        icon: category.icon,
-        isDefault: true,
-      },
-      create: {
+        data: {
+          color: category.color,
+          icon: category.icon,
+          isDefault: true,
+        },
+      });
+
+      continue;
+    }
+
+    await prisma.category.create({
+      data: {
         ...category,
         isDefault: true,
       },
