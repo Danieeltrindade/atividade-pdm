@@ -302,6 +302,4 @@ npm run prisma:generate
 
 ---
 
-## 📄 Licença
 
-Licença ISC.
